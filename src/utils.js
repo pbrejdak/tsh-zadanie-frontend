@@ -50,3 +50,5 @@ export const parseHttpError = (response) => {
         return `${response.status}: ${response.statusText}`;
     }
 }
+
+export const formatDate = (date) => `${date.toLocaleDateString('en-US', { month: 'short' })} ${date.toLocaleDateString('en-US', { day: '2-digit' })}, ${date.toLocaleDateString('en-US', { year: 'numeric' })}`

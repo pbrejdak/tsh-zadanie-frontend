@@ -1,11 +1,12 @@
 import $ from 'cash-dom';
 import './assets/scss/app.scss';
 import { makeRequest, parseHttpError } from './utils';
-
+import { UserTimeline } from './event-timeline';
 
 
 export class App {
   initializeApp() {
+    this.timeline = new UserTimeline();
     $('#user-search').on('submit', (evt) => this.onLoadProfile(evt));
     $('.input.username').on('invalid', (evt) => $('.input.username').addClass('is-danger'));
   }
@@ -17,22 +18,91 @@ export class App {
     const userName = usernameInput.val();
     usernameInput.removeClass('is-danger');
 
-    makeRequest('GET', 'https://api.github.com/users/' + userName)
-      .then(response => {
-        if (response.status === 200) {
-          this.getProfileErr = '';
-          this.profile = response.body;
-          this.updateProfile();
-        } else {
-          const err = parseHttpError(response);
-          this.getProfileErr = err;
-          this.setProfileError();
-        }
-      })
-      .catch(err => {
+    const promises = [
+      this.getProfile(userName),
+      this.getHistory(userName)
+    ];
+
+    Promise.all(promises)
+      .then(responses => {
+        const [profileResponse, historyResponse] = responses;
+        this.onGetProfileCompleted(profileResponse);
+        this.onGetHistoryCompleted(historyResponse);
+      }).catch(err => {
         this.setProfileError();
+        this.setHistoryError();
       });
   }
+
+  // #region http handlers
+
+  onGetProfileCompleted(response) {
+    if (response.status === 200) {
+      this.getProfileErr = '';
+      this.profile = response.body;
+      this.updateProfile();
+    } else {
+      const err = parseHttpError(response);
+      this.getProfileErr = err;
+      this.setProfileError();
+    }
+  }
+
+  onGetHistoryCompleted(response) {
+    if (response.status === 200) {
+      this.getProfileErr = '';
+      this.eventsDef = response.body;
+      this.createHistory();
+    } else {
+      const err = parseHttpError(response);
+      this.getHistoryErr = err;
+      this.setHistoryError();
+    }
+  }
+
+  // #endregion
+
+  // #region http calls
+
+  getProfile(userName) {
+    return makeRequest('GET', `https://api.github.com/users/${userName}`);
+  }
+
+  getHistory(userName) {
+    return makeRequest('GET', `https://api.github.com/users/${userName}/events/public`);
+  }
+
+  // #endregion
+
+  // #region history handling
+
+  setHistoryError() {
+    const err = this.getHistoryErr || 'An error occurred.';
+    const errNotification = $('#timeline-notification-error');
+    errNotification.removeClass('is-hidden');
+    errNotification.text(err);
+    this.hideTimeline();
+  }
+
+  hideTimeline() {
+    $('#user-timeline').addClass('is-hidden');
+  }
+
+  showTimeline() {
+    $('#user-timeline').removeClass('is-hidden');
+  }
+
+  createHistory() {
+    this.timeline.initEvents(this.eventsDef);
+    const html = this.timeline.timelineHtml;
+
+    $('#user-timeline').html(html);
+    this.showTimeline();
+  }
+
+  // #endregion
+
+  // #region profile handling
 
   setProfileError() {
     const err = this.getProfileErr || 'An error occurred.';
@@ -59,4 +129,6 @@ export class App {
 
     $('#profile-notification-error').addClass('is-hidden');
   }
+
+  // #endregion
 }
