@@ -13,8 +13,9 @@
         <form id="user-search">
           <div class="field has-addons">
             <div class="control">
-              <input class="input username" type="text" placeholder="enter github username" pattern="[a-z0-9_-]{1,}"
-                required="true" title="github username can contain lowercase letters and special characters '-,_'.">
+              <input class="input username" autofocus type="text" placeholder="enter github username"
+                pattern="[a-z0-9_-]{1,}" required="true"
+                title="github username can contain lowercase letters and special characters '-,_'.">
             </div>
             <div class="control">
               <button class="button is-info load-username">
@@ -33,7 +34,7 @@
   </nav>
 
 
-  <div class="container">
+  <div class="container is-hidden" id="main-container">
     <div class="columns is-1-tablet">
       <div class="profile-container column is-one-third">
 
@@ -43,7 +44,7 @@
           <button class="delete"></button>
         </div>
 
-        <div class="profile" id="profile-desc">
+        <div class="profile is-hidden" id="profile-desc">
           <div class="media">
             <div class="media-left">
               <figure class="media-left image is-64x64">
@@ -71,7 +72,7 @@
           <button class="delete"></button>
         </div>
 
-        <div class="timeline" id="user-timeline">
+        <div class="timeline is-hidden" id="user-timeline">
 
           <div class="timeline-item">
             <div class="timeline-marker"></div>

@@ -23,14 +23,24 @@ export class App {
       this.getHistory(userName)
     ];
 
+    this.hideProfile();
+    this.hideTimeline();
+    this.showIndicator();
+
     Promise.all(promises)
       .then(responses => {
         const [profileResponse, historyResponse] = responses;
         this.onGetProfileCompleted(profileResponse);
         this.onGetHistoryCompleted(historyResponse);
+
+        $('#main-container').removeClass('is-hidden')
+        this.hideIndicator();
       }).catch(err => {
         this.setProfileError();
         this.setHistoryError();
+
+        $('#main-container').removeClass('is-hidden')
+        this.hideIndicator();
       });
   }
 
@@ -58,6 +68,14 @@ export class App {
       this.getHistoryErr = err;
       this.setHistoryError();
     }
+  }
+
+  hideIndicator() {
+    $('#spinner').addClass('is-hidden');
+  }
+
+  showIndicator() {
+    $('#spinner').removeClass('is-hidden');
   }
 
   // #endregion
@@ -98,6 +116,8 @@ export class App {
 
     $('#user-timeline').html(html);
     this.showTimeline();
+
+    $('#timeline-notification-error').addClass('is-hidden');
   }
 
   // #endregion
