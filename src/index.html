@@ -10,16 +10,19 @@
   <nav class="navbar">
     <div class="navbar-brand">
       <div class="navbar-item">
-        <div class="field has-addons">
-          <div class="control">
-            <input class="input username" type="text" placeholder="enter github username">
+        <form id="user-search">
+          <div class="field has-addons">
+            <div class="control">
+              <input class="input username" type="text" placeholder="enter github username" pattern="[a-z0-9_-]{1,}"
+                required="true" title="github username can contain lowercase letters and special characters '-,_'.">
+            </div>
+            <div class="control">
+              <button class="button is-info load-username">
+                Load
+              </button>
+            </div>
           </div>
-          <div class="control">
-            <button class="button is-info load-username">
-              Load
-            </button>
-          </div>
-        </div>
+        </form>
       </div>
 
       <div class="navbar-item">

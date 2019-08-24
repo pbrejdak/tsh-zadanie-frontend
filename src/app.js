@@ -6,11 +6,17 @@ import { makeRequest, parseHttpError } from './utils';
 
 export class App {
   initializeApp() {
-    $('.load-username').on('click', () => this.onLoadProfile());
+    $('#user-search').on('submit', (evt) => this.onLoadProfile(evt));
+    $('.input.username').on('invalid', (evt) => $('.input.username').addClass('is-danger'));
   }
 
-  onLoadProfile() {
-    const userName = $('.username.input').val();
+  onLoadProfile(evt) {
+    evt.preventDefault();
+
+    const usernameInput = $('.username.input');
+    const userName = usernameInput.val();
+    usernameInput.removeClass('is-danger');
+
     makeRequest('GET', 'https://api.github.com/users/' + userName)
       .then(response => {
         if (response.status === 200) {
