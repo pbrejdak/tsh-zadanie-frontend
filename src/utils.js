@@ -40,3 +40,13 @@ export const makeRequest = (method, url, body = {}, headers = DEFAULT_HEADERS) =
         xhr.send();
     });
 };
+
+export const parseHttpError = (response) => {
+    const body = response.body || {};
+
+    if (body.message) {
+        return body.message;
+    } else {
+        return `${response.status}: ${response.statusText}`;
+    }
+}
