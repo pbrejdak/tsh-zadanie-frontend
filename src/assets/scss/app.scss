@@ -17,3 +17,27 @@
 .timeline .timeline-item {
   padding-bottom:1em;
 }
+
+$breakpointTablet: 768px;
+$breakpointDesktop: 1280px;
+
+@media (max-width: $breakpointTablet - 1px) {
+  .profile-container {
+    width: 100%;
+    flex: none;
+  }
+}
+
+@media (min-width: $breakpointTablet) and (max-width: $breakpointDesktop) {
+  .profile-container {
+    width: 50%;
+    flex: none;
+  }
+}
+
+@media (min-width: $breakpointDesktop + 1px) {
+  .profile-container {
+    width: 30%;
+    flex: none;
+  }
+}
